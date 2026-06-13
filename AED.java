@@ -1,13 +1,13 @@
-import java.util.Scanner;
-import java.io.FileWriter;
-import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
-public class EAD {
+public class AED {
 
     // ============================================================
-    // [NOVO] RF1 - CADASTRO: salva um contato no arquivo cadastro.txt
+    // RF1 - CADASTRO: salva um contato no arquivo cadastro.txt
     // ============================================================
     static void cadastrarContato(Scanner sc) {
         sc.nextLine(); // limpa buffer
@@ -17,7 +17,7 @@ public class EAD {
         String telefone = sc.nextLine().trim();
 
         try {
-            FileWriter fw = new FileWriter("cadastro.txt", true); // true = append
+            FileWriter fw = new FileWriter("cadastro.txt", true);
             fw.write(nome + ";" + telefone + "\n");
             fw.close();
             System.out.println("Contato cadastrado com sucesso!");
@@ -27,7 +27,7 @@ public class EAD {
     }
 
     // ============================================================
-    // [NOVO] RF2 - LISTAGEM: lê e exibe todos os contatos do arquivo
+    // RF2 - LISTAGEM: le e exibe todos os contatos do arquivo
     // ============================================================
     static void listarContatos() {
         System.out.println("\n===== LISTA DE CONTATOS =====");
@@ -53,7 +53,7 @@ public class EAD {
     }
 
     // ============================================================
-    // [NOVO] RF3 - BUSCA: procura contato pelo nome no arquivo
+    // RF3 - BUSCA: procura contato pelo nome no arquivo
     // ============================================================
     static void buscarContato(Scanner sc) {
         sc.nextLine(); // limpa buffer
@@ -84,10 +84,47 @@ public class EAD {
     }
 
     // ============================================================
-    // MAIN - menu principal (original preservado + novo submenu)
+    // MENU INICIAL - exibido antes do programa principal
+    // ============================================================
+    static void menuInicial(Scanner sc) {
+        boolean continuar = true;
+        while (continuar) {
+            System.out.println("============================================");
+            System.out.println("       BEM-VINDO AO SISTEMA EAD 60+        ");
+            System.out.println("============================================");
+            System.out.println("1 = Cadastrar Contato");
+            System.out.println("2 = Listar Contatos");
+            System.out.println("3 = Buscar Contato");
+            System.out.println("4 = Iniciar o Programa de Mensagens");
+            System.out.println("============================================");
+            System.out.print("Escolha uma opcao: ");
+
+            int opcao = sc.nextInt();
+
+            if (opcao == 1) {
+                cadastrarContato(sc);
+            } else if (opcao == 2) {
+                listarContatos();
+            } else if (opcao == 3) {
+                buscarContato(sc);
+            } else if (opcao == 4) {
+                continuar = false; // sai do menu inicial e inicia o programa
+            } else {
+                System.out.println("Opcao invalida. Por favor, escolha entre 1 e 4.\n");
+            }
+        }
+    }
+
+    // ============================================================
+    // MAIN
     // ============================================================
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
+
+        // [NOVO] Exibe o menu inicial antes de tudo
+        menuInicial(sc);
+
+        // A partir daqui: programa original de mensagens
         boolean verificarOpcao = true;
         String[][] matriz_trimestre1 = {
             {"Confraternizacao Universal", "(01 de janeiro)", "Feliz Confraternizacao Universal! Que a energia deste recomeco renove nossas esperancas e nos de forcas para construir um ano incrivel, "},
@@ -143,11 +180,7 @@ public class EAD {
                 "-----Escolha uma das Opcoes:----- \n" +
                 "1 = Datas Especiais \n" +
                 "2 = Mensagem Casual \n" +
-                "3 = Aniversario De alguem\n" +
-                // [NOVO] opcoes do menu de contatos
-                "4 = Cadastrar Contato\n" +
-                "5 = Listar Contatos\n" +
-                "6 = Buscar Contato"
+                "3 = Aniversario De alguem"
             );
             int opcao = sc.nextInt();
 
@@ -503,35 +536,12 @@ public class EAD {
                     seg_mensagem_escolhida = sc.nextInt();
                 } while (seg_mensagem_escolhida < 1 || seg_mensagem_escolhida > 10);
                 mensagem_final = "Feliz aniversario, " + Nome + "! Que seu dia seja repleto de alegria e amor. " + Vetor_segunda_mensagem[seg_mensagem_escolhida - 1];
-
-            // ============================================================
-            // [NOVO] RF1 - opcao 4: Cadastrar Contato
-            // ============================================================
-            } else if (opcao == 4) {
-                cadastrarContato(sc);
-                verificarOpcao = true; // volta ao menu
-
-            // ============================================================
-            // [NOVO] RF2 - opcao 5: Listar Contatos
-            // ============================================================
-            } else if (opcao == 5) {
-                listarContatos();
-                verificarOpcao = true; // volta ao menu
-
-            // ============================================================
-            // [NOVO] RF3 - opcao 6: Buscar Contato
-            // ============================================================
-            } else if (opcao == 6) {
-                buscarContato(sc);
-                verificarOpcao = true; // volta ao menu
-
             } else {
                 verificarOpcao = true;
-                System.out.println("Opcao invalida. Por favor, escolha um numero entre 1 a 6.");
+                System.out.println("Opcao invalida. Por favor, escolha um numero entre 1 a 3.");
             }
         }
 
-        // [NOVO] RF4 - alem de exibir, salva a mensagem final gerada em historico.txt
         if (mensagem_final != null) {
             System.out.println("Mensagem final: " + mensagem_final);
             try {
