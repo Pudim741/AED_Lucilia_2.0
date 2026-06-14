@@ -4,26 +4,36 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class AED {
+public class AEDD {
 
     // ============================================================
-    // RF1 - CADASTRO: salva um contato no arquivo cadastro.txt
+    // RF1 - CADASTRO: feito obrigatoriamente ao escolher "Iniciar"
+    // Salva em cadastro.txt e retorna [nome, telefone] para o historico
     // ============================================================
-    static void cadastrarContato(Scanner sc) {
+    static String[] cadastrarUsuario(Scanner sc) {
         sc.nextLine(); // limpa buffer
-        System.out.print("Digite o nome do contato: ");
-        String nome = sc.nextLine().trim();
-        System.out.print("Digite o telefone do contato: ");
-        String telefone = sc.nextLine().trim();
+        String nome;
+        do {
+            System.out.print("Digite seu nome para comecar: ");
+            nome = sc.nextLine().trim();
+        } while (nome.isEmpty());
+
+        String telefone;
+        do {
+            System.out.print("Digite seu telefone: ");
+            telefone = sc.nextLine().trim();
+        } while (telefone.isEmpty());
 
         try {
             FileWriter fw = new FileWriter("cadastro.txt", true);
             fw.write(nome + ";" + telefone + "\n");
             fw.close();
-            System.out.println("Contato cadastrado com sucesso!");
+            System.out.println("Cadastro realizado! Bem-vindo(a), " + nome + "!\n");
         } catch (IOException e) {
-            System.out.println("Erro ao salvar contato: " + e.getMessage());
+            System.out.println("Erro ao salvar cadastro: " + e.getMessage());
         }
+
+        return new String[]{nome, telefone};
     }
 
     // ============================================================
@@ -84,35 +94,37 @@ public class AED {
     }
 
     // ============================================================
-    // MENU INICIAL - exibido antes do programa principal
+    // MENU INICIAL
+    // 1 = Listar | 2 = Buscar | 3 = Iniciar (faz cadastro obrigatorio)
     // ============================================================
-    static void menuInicial(Scanner sc) {
+    static String[] menuInicial(Scanner sc) {
+        String[] usuario = null;
         boolean continuar = true;
         while (continuar) {
             System.out.println("============================================");
             System.out.println("       BEM-VINDO AO SISTEMA EAD 60+        ");
             System.out.println("============================================");
-            System.out.println("1 = Cadastrar Contato");
-            System.out.println("2 = Listar Contatos");
-            System.out.println("3 = Buscar Contato");
-            System.out.println("4 = Iniciar o Programa de Mensagens");
+            System.out.println("1 = Listar Contatos");
+            System.out.println("2 = Buscar Contato");
+            System.out.println("3 = Iniciar o Programa de Mensagens");
             System.out.println("============================================");
             System.out.print("Escolha uma opcao: ");
 
             int opcao = sc.nextInt();
 
             if (opcao == 1) {
-                cadastrarContato(sc);
-            } else if (opcao == 2) {
                 listarContatos();
-            } else if (opcao == 3) {
+            } else if (opcao == 2) {
                 buscarContato(sc);
-            } else if (opcao == 4) {
-                continuar = false; // sai do menu inicial e inicia o programa
+            } else if (opcao == 3) {
+                // RF1 - Cadastro obrigatorio ao iniciar
+                usuario = cadastrarUsuario(sc);
+                continuar = false;
             } else {
-                System.out.println("Opcao invalida. Por favor, escolha entre 1 e 4.\n");
+                System.out.println("Opcao invalida. Por favor, escolha entre 1 e 3.\n");
             }
         }
+        return usuario;
     }
 
     // ============================================================
@@ -121,10 +133,10 @@ public class AED {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
 
-        // [NOVO] Exibe o menu inicial antes de tudo
-        menuInicial(sc);
+        // Menu inicial: listar/buscar ou iniciar (com cadastro obrigatorio)
+        String[] usuario = menuInicial(sc);
 
-        // A partir daqui: programa original de mensagens
+        // A partir daqui: programa de mensagens
         boolean verificarOpcao = true;
         String[][] matriz_trimestre1 = {
             {"Confraternizacao Universal", "(01 de janeiro)", "Feliz Confraternizacao Universal! Que a energia deste recomeco renove nossas esperancas e nos de forcas para construir um ano incrivel, "},
@@ -546,9 +558,9 @@ public class AED {
             System.out.println("Mensagem final: " + mensagem_final);
             try {
                 FileWriter fw = new FileWriter("historico.txt", true);
-                fw.write(mensagem_final + "\n");
+                fw.write("Nome: " + usuario[0] + " | Telefone: " + usuario[1] + " | Mensagem: " + mensagem_final + "\n");
                 fw.close();
-                System.out.println("[Mensagem salva em historico.txt]");
+                System.out.println("[Historico salvo em historico.txt]");
             } catch (IOException e) {
                 System.out.println("Erro ao salvar historico: " + e.getMessage());
             }
